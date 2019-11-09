@@ -1,0 +1,6 @@
+{
+	"name": "integrationRuntimeMZmachine",
+	"properties": {
+		"type": "SelfHosted"
+	}
+}
