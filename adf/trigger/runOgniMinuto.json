@@ -1,0 +1,24 @@
+{
+	"name": "runOgniMinuto",
+	"properties": {
+		"annotations": [],
+		"runtimeState": "Started",
+		"pipelines": [
+			{
+				"pipelineReference": {
+					"referenceName": "MySQL to AZ SQL DB",
+					"type": "PipelineReference"
+				}
+			}
+		],
+		"type": "ScheduleTrigger",
+		"typeProperties": {
+			"recurrence": {
+				"frequency": "Minute",
+				"interval": 1,
+				"startTime": "2019-11-10T16:04:00.000Z",
+				"timeZone": "UTC"
+			}
+		}
+	}
+}

@@ -94,6 +94,12 @@
 				]
 			}
 		],
+		"parameters": {
+			"New": {
+				"type": "string",
+				"defaultValue": "1"
+			}
+		},
 		"annotations": []
 	}
 }
