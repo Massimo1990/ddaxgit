@@ -1,0 +1,81 @@
+{
+	"$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"factoryName": {
+			"type": "string",
+			"metadata": "Data Factory name",
+			"defaultValue": "adfxdda"
+		}
+	},
+	"variables": {
+		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
+	},
+	"resources": [
+		{
+			"name": "[concat(parameters('factoryName'), '/runOgniMinuto')]",
+			"type": "Microsoft.DataFactory/factories/triggers",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"runtimeState": "Stopped",
+				"pipelines": [
+					{
+						"pipelineReference": {
+							"referenceName": "MySQL to AZ SQL DB",
+							"type": "PipelineReference"
+						},
+						"parameters": {
+							"New": "0"
+						}
+					}
+				],
+				"type": "ScheduleTrigger",
+				"typeProperties": {
+					"recurrence": {
+						"frequency": "Minute",
+						"interval": 1,
+						"startTime": "2019-11-10T16:04:00.000Z",
+						"timeZone": "UTC"
+					}
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/WranglingDataFlow1')]",
+			"type": "Microsoft.DataFactory/factories/dataflows",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "WranglingDataFlow",
+				"typeProperties": {
+					"sources": [
+						{
+							"name": "FutureCityAZSQLTable",
+							"script": "",
+							"dataset": {
+								"referenceName": "FutureCityAZSQLTable",
+								"type": "DatasetReference"
+							},
+							"typeProperties": {
+								"readMode": null
+							}
+						}
+					],
+					"sinks": [
+						{
+							"name": "Sink1",
+							"dataset": {
+								"referenceName": "FutureCityAZSQLTable",
+								"type": "DatasetReference"
+							},
+							"script": "sink(input(\n\t\tID as integer,\n\t\tName as string,\n\t\tTitle as string,\n\t\tCountryCode as string,\n\t\tDistrict as string,\n\t\tPopulation as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:true,\n\tupdateable:false,\n\tupsertable:false,\n\tformat: 'table') ~> Sink1"
+						}
+					],
+					"script": "section Section1; shared #\"FutureCityAZSQLTable\" = let AdfDoc = Sql.Database(\"ddasvr.database.windows.net\", \"dda_db\"), InputTable = AdfDoc{[Schema=\"stg\",Item=\"FutureCity\"]}[Data] in InputTable;shared UserQuery = let Source = #\"FutureCityAZSQLTable\" in Source;"
+				}
+			},
+			"dependsOn": []
+		}
+	]
+}
