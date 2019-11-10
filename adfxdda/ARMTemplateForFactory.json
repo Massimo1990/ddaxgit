@@ -118,6 +118,33 @@
 								"parameters": {}
 							}
 						]
+					},
+					{
+						"name": "RunStoredProcAZSQL",
+						"type": "SqlServerStoredProcedure",
+						"dependsOn": [
+							{
+								"activity": "fromMySQLtoAZdbSQL",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"storedProcedureName": "[[stg].[Aggiungi1rigaXminuto_v1]"
+						},
+						"linkedServiceName": {
+							"referenceName": "connessioneOutputAZdbSQL",
+							"type": "LinkedServiceReference"
+						}
 					}
 				],
 				"parameters": {
@@ -130,7 +157,8 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/CityMySQLTable')]",
-				"[concat(variables('factoryId'), '/datasets/FutureCityAZSQLTable')]"
+				"[concat(variables('factoryId'), '/datasets/FutureCityAZSQLTable')]",
+				"[concat(variables('factoryId'), '/linkedServices/connessioneOutputAZdbSQL')]"
 			]
 		},
 		{
@@ -271,6 +299,39 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/MySQL to AZ SQL DB')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Test_Table_AZsql')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "connessioneOutputAZdbSQL",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlTable",
+				"schema": [
+					{
+						"name": "valore",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "timestamp",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "stg",
+					"table": "table_test"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/connessioneOutputAZdbSQL')]"
 			]
 		}
 	]
