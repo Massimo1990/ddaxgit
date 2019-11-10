@@ -1,0 +1,15 @@
+{
+	"name": "CityMySQLTable",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "connessione_input_MySQL",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "MySqlTable",
+		"schema": [],
+		"typeProperties": {
+			"tableName": "`city`"
+		}
+	}
+}

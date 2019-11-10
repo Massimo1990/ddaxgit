@@ -1,0 +1,7 @@
+{
+	"name": "MySQL to AZ SQL DB",
+	"properties": {
+		"description": "provo link (warning su local mySQL firewall D&T)  tra local MySQL Server e AZ SQL DB",
+		"annotations": []
+	}
+}
