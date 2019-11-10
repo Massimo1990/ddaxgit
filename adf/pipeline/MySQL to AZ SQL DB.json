@@ -2,6 +2,98 @@
 	"name": "MySQL to AZ SQL DB",
 	"properties": {
 		"description": "provo link (warning su local mySQL firewall D&T)  tra local MySQL Server e AZ SQL DB",
+		"activities": [
+			{
+				"name": "fromMySQLtoAZdbSQL",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "MySqlSource",
+						"query": "select * from `city`\nwhere ID <> 1"
+					},
+					"sink": {
+						"type": "AzureSqlSink"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "ID",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "ID",
+									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "Name",
+									"type": "String"
+								},
+								"sink": {
+									"name": "Name",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "CountryCode",
+									"type": "String"
+								},
+								"sink": {
+									"name": "CountryCode",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "District",
+									"type": "String"
+								},
+								"sink": {
+									"name": "District",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Population",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "Population",
+									"type": "Int32"
+								}
+							}
+						]
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "CityMySQLTable",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "FutureCityAZSQLTable",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
 		"annotations": []
 	}
 }
