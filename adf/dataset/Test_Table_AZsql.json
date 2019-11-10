@@ -1,0 +1,28 @@
+{
+	"name": "Test_Table_AZsql",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "connessioneOutputAZdbSQL",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "valore",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "timestamp",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			}
+		],
+		"typeProperties": {
+			"schema": "stg",
+			"table": "table_test"
+		}
+	}
+}
