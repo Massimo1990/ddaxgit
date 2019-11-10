@@ -6,18 +6,6 @@
 			"type": "string",
 			"metadata": "Data Factory name",
 			"defaultValue": "adfxdda"
-		},
-		"connessioneOutputAZdbSQL_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'connessioneOutputAZdbSQL'"
-		},
-		"connessione_input_MySQL_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'connessione_input_MySQL'"
-		},
-		"runOgniMinuto_properties_MySQL to AZ SQL DB_parameters_New": {
-			"type": "string",
-			"defaultValue": "1"
 		}
 	},
 	"variables": {
@@ -111,15 +99,13 @@
 						"inputs": [
 							{
 								"referenceName": "CityMySQLTable",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						],
 						"outputs": [
 							{
 								"referenceName": "FutureCityAZSQLTable",
-								"type": "DatasetReference",
-								"parameters": {}
+								"type": "DatasetReference"
 							}
 						]
 					},
@@ -193,144 +179,7 @@
 				},
 				"annotations": []
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/datasets/CityMySQLTable')]",
-				"[concat(variables('factoryId'), '/datasets/FutureCityAZSQLTable')]",
-				"[concat(variables('factoryId'), '/linkedServices/connessioneOutputAZdbSQL')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/CityMySQLTable')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "connessione_input_MySQL",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "MySqlTable",
-				"schema": [],
-				"typeProperties": {
-					"tableName": "`city`"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/connessione_input_MySQL')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/FutureCityAZSQLTable')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "connessioneOutputAZdbSQL",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "ID",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "Name",
-						"type": "nvarchar"
-					},
-					{
-						"name": "Title",
-						"type": "nvarchar"
-					},
-					{
-						"name": "CountryCode",
-						"type": "varchar"
-					},
-					{
-						"name": "District",
-						"type": "varchar"
-					},
-					{
-						"name": "Population",
-						"type": "int",
-						"precision": 10
-					}
-				],
-				"typeProperties": {
-					"schema": "stg",
-					"table": "FutureCity"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/connessioneOutputAZdbSQL')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/Test_Table_AZsql')]",
-			"type": "Microsoft.DataFactory/factories/datasets",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"linkedServiceName": {
-					"referenceName": "connessioneOutputAZdbSQL",
-					"type": "LinkedServiceReference"
-				},
-				"annotations": [],
-				"type": "AzureSqlTable",
-				"schema": [
-					{
-						"name": "valore",
-						"type": "int",
-						"precision": 10
-					},
-					{
-						"name": "timestamp",
-						"type": "datetime",
-						"precision": 23,
-						"scale": 3
-					}
-				],
-				"typeProperties": {
-					"schema": "stg",
-					"table": "table_test"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/linkedServices/connessioneOutputAZdbSQL')]"
-			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/connessioneOutputAZdbSQL')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "AzureSqlDatabase",
-				"typeProperties": {
-					"connectionString": "[parameters('connessioneOutputAZdbSQL_connectionString')]"
-				}
-			},
 			"dependsOn": []
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/connessione_input_MySQL')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"annotations": [],
-				"type": "MySql",
-				"typeProperties": {
-					"connectionString": "[parameters('connessione_input_MySQL_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntimeMZmachine",
-					"type": "IntegrationRuntimeReference"
-				}
-			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeMZmachine')]"
-			]
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/runOgniMinuto')]",
@@ -346,7 +195,7 @@
 							"type": "PipelineReference"
 						},
 						"parameters": {
-							"New": "[parameters('runOgniMinuto_properties_MySQL to AZ SQL DB_parameters_New')]"
+							"New": "1"
 						}
 					}
 				],
@@ -363,16 +212,6 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/MySQL to AZ SQL DB')]"
 			]
-		},
-		{
-			"name": "[concat(parameters('factoryName'), '/integrationRuntimeMZmachine')]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "SelfHosted",
-				"typeProperties": {}
-			},
-			"dependsOn": []
 		}
 	]
 }

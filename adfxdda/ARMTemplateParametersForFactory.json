@@ -5,11 +5,14 @@
 		"factoryName": {
 			"value": "adfxdda"
 		},
+		"connessioneOutputAZdbSQL_connectionString": {
+			"value": ""
+		},
 		"connessione_input_MySQL_connectionString": {
 			"value": ""
 		},
-		"connessioneOutputAZdbSQL_connectionString": {
-			"value": ""
+		"runOgniMinuto_properties_MySQL to AZ SQL DB_parameters_New": {
+			"value": "1"
 		}
 	}
 }

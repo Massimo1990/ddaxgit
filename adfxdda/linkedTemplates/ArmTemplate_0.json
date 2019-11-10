@@ -14,22 +14,16 @@
 		"connessione_input_MySQL_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'connessione_input_MySQL'"
+		},
+		"runOgniMinuto_properties_MySQL to AZ SQL DB_parameters_New": {
+			"type": "string",
+			"defaultValue": "1"
 		}
 	},
 	"variables": {
 		"factoryId": "[concat('Microsoft.DataFactory/factories/', parameters('factoryName'))]"
 	},
 	"resources": [
-		{
-			"name": "[concat(parameters('factoryName'), '/integrationRuntimeMZmachine')]",
-			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
-			"apiVersion": "2018-06-01",
-			"properties": {
-				"type": "SelfHosted",
-				"typeProperties": {}
-			},
-			"dependsOn": []
-		},
 		{
 			"name": "[concat(parameters('factoryName'), '/connessioneOutputAZdbSQL')]",
 			"type": "Microsoft.DataFactory/factories/linkedServices",
@@ -44,23 +38,14 @@
 			"dependsOn": []
 		},
 		{
-			"name": "[concat(parameters('factoryName'), '/connessione_input_MySQL')]",
-			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"name": "[concat(parameters('factoryName'), '/integrationRuntimeMZmachine')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
 			"apiVersion": "2018-06-01",
 			"properties": {
-				"annotations": [],
-				"type": "MySql",
-				"typeProperties": {
-					"connectionString": "[parameters('connessione_input_MySQL_connectionString')]"
-				},
-				"connectVia": {
-					"referenceName": "integrationRuntimeMZmachine",
-					"type": "IntegrationRuntimeReference"
-				}
+				"type": "SelfHosted",
+				"typeProperties": {}
 			},
-			"dependsOn": [
-				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeMZmachine')]"
-			]
+			"dependsOn": []
 		},
 		{
 			"name": "[concat(parameters('factoryName'), '/FutureCityAZSQLTable')]",
@@ -141,6 +126,25 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/connessioneOutputAZdbSQL')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/connessione_input_MySQL')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "MySql",
+				"typeProperties": {
+					"connectionString": "[parameters('connessione_input_MySQL_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "integrationRuntimeMZmachine",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/integrationRuntimeMZmachine')]"
 			]
 		},
 		{
@@ -288,6 +292,40 @@
 							"referenceName": "connessioneOutputAZdbSQL",
 							"type": "LinkedServiceReference"
 						}
+					},
+					{
+						"name": "SendEmailFailure",
+						"type": "WebActivity",
+						"dependsOn": [
+							{
+								"activity": "fromMySQLtoAZdbSQL",
+								"dependencyConditions": [
+									"Failed"
+								]
+							}
+						],
+						"policy": {
+							"timeout": "7.00:00:00",
+							"retry": 0,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"url": "https://prod-29.westus2.logic.azure.com:443/workflows/6a5d0195f1b64f95861e8ba74a970adf/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=V5bqD1jDw_pHm4JVnjjq0TP5QVFKLfvMmrGMThURjxg",
+							"method": "POST",
+							"headers": {
+								"Content-Type": "application/json"
+							},
+							"body": {
+								"DataFactoryName": "@{pipeline().DataFactory}",
+								"PipelineName": "@{pipeline().Pipeline}",
+								"Subject": "An error has occurred!",
+								"ErrorMessage": "Ciao! The ADF pipeline has not run properly! Please check the logs.",
+								"EmailTo": "mzanellato@deloitte.it"
+							}
+						}
 					}
 				],
 				"parameters": {
@@ -317,7 +355,9 @@
 							"referenceName": "MySQL to AZ SQL DB",
 							"type": "PipelineReference"
 						},
-						"parameters": {}
+						"parameters": {
+							"New": "[parameters('runOgniMinuto_properties_MySQL to AZ SQL DB_parameters_New')]"
+						}
 					}
 				],
 				"type": "ScheduleTrigger",

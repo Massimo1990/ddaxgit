@@ -7,13 +7,17 @@
 			"metadata": "Data Factory name",
 			"defaultValue": "adfxdda"
 		},
+		"connessioneOutputAZdbSQL_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'connessioneOutputAZdbSQL'"
+		},
 		"connessione_input_MySQL_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'connessione_input_MySQL'"
 		},
-		"connessioneOutputAZdbSQL_connectionString": {
-			"type": "secureString",
-			"metadata": "Secure string for 'connectionString' of 'connessioneOutputAZdbSQL'"
+		"runOgniMinuto_properties_MySQL to AZ SQL DB_parameters_New": {
+			"type": "string",
+			"defaultValue": "1"
 		},
 		"containerUri": {
 			"type": "string",
@@ -47,6 +51,9 @@
 					},
 					"connessione_input_MySQL_connectionString": {
 						"value": "[parameters('connessione_input_MySQL_connectionString')]"
+					},
+					"runOgniMinuto_properties_MySQL to AZ SQL DB_parameters_New": {
+						"value": "[parameters('runOgniMinuto_properties_MySQL to AZ SQL DB_parameters_New')]"
 					}
 				}
 			},
