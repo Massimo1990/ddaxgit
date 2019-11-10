@@ -12,7 +12,7 @@
 			"value": ""
 		},
 		"runOgniMinuto_properties_MySQL to AZ SQL DB_parameters_New": {
-			"value": "1"
+			"value": "0"
 		},
 		"containerUri": {
 			"value": ""
