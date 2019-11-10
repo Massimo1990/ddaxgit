@@ -8,6 +8,9 @@
 				"pipelineReference": {
 					"referenceName": "MySQL to AZ SQL DB",
 					"type": "PipelineReference"
+				},
+				"parameters": {
+					"New": "1"
 				}
 			}
 		],
