@@ -138,7 +138,21 @@
 					"secureOutput": false,
 					"secureInput": false
 				},
-				"userProperties": []
+				"userProperties": [],
+				"typeProperties": {
+					"url": "https://prod-29.westus2.logic.azure.com:443/workflows/6a5d0195f1b64f95861e8ba74a970adf/triggers/manual/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=V5bqD1jDw_pHm4JVnjjq0TP5QVFKLfvMmrGMThURjxg",
+					"method": "POST",
+					"headers": {
+						"Content-Type": "application/json"
+					},
+					"body": {
+						"DataFactoryName": "@{pipeline().DataFactory}",
+						"PipelineName": "@{pipeline().Pipeline}",
+						"Subject": "An error has occurred!",
+						"ErrorMessage": "Ciao! The ADF pipeline has not run properly! Please check the logs.",
+						"EmailTo": "mzanellato@deloitte.it"
+					}
+				}
 			}
 		],
 		"parameters": {
